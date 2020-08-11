@@ -16,3 +16,12 @@
 
 ##### Para codeshabilitar las cors
 # npm i cors
+
+##########################################################################
+crear repositorio git
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/pacomonle/admin-pro-backend-mean.git
+git push -u origin master
+############################################################################

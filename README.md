@@ -17,6 +17,15 @@
 ##### Para codeshabilitar las cors
 # npm i cors
 
+##### hash de password
+# npm i bcryptjs
+
+##### validacion de express
+# npm i express-validator
+
+##### para generar token
+# npm i jsonwebtoken
+
 ##########################################################################
 crear repositorio git
 git init

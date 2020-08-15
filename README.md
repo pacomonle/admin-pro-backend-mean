@@ -26,6 +26,12 @@
 ##### para generar token
 # npm i jsonwebtoken
 
+##### para cargar archivos
+# npm i express-fileupload
+
+##### generador automatico de id
+# npm i uuid
+
 ##########################################################################
 crear repositorio git
 git init

@@ -1,97 +1,64 @@
 // para poder ver las ayudas de las resp.
 const { response } = require('express');
-// libreria encriptar contraseña
-const bcrypt = require('bcryptjs');
-// modelo de usuario importado
-const Usuario = require('../models/usuario');
-// generar token con libreria jwt
-const { generarJWT } = require('../helpers/jwt');
-const { Promise } = require('mongoose');
+
+// modelo de hospital importado
+const Medico = require('../models/medico');
 
 
-const getUsuarios = async(req, res) => {
-
-    // paginacion - .skip y .limit
-    const desde = Number(req.query.desde) || 0
-  
-
-    // await en paralelo
-
-  const [usuarios, total] =  await Promise.all([
-                                    Usuario.find({}, 'nombre email role img')
-                                                                .skip(desde)
-                                                                .limit(5),
-                                        // conteo total de registros
-                                   // Usuario.count()
-                                     Usuario.countDocuments()
-                                    ])
-
-   
+const getMedicos = async(req, res = response) => {
+    const medicos = await Medico.find()
+                                .populate('usuario', 'nombre role email img')
+                                .populate('hospital', 'nombre img')
 
     res.json({
         ok: true,
-        usuarios,
-        total,
-        // viene del token
-        uid: req.uid
+        medicos
     });
 
 }
 
-const crearUsuario = async(req, res = response) => {
-    console.log(req.body)
-    const { email, password } = req.body;
-    
+const crearMedico = async(req, res = response) => {
 
-    try {
+  // console.log(req.body)
+  // extraer eluid del usuario del TOKEN - JWT
+   // el middleware devuelve el req.uid y el req.role
+   const uid = req.uid
+   const { hospital, nombre } = req.body
 
-        const existeEmail = await Usuario.findOne({ email });
+  try {
+    const medico = new Medico( {
+        usuario: uid,
+        hospital,
+        nombre
+    } );
+        // Guardar medico
+     const medicoDB = await medico.save();
 
-        if ( existeEmail ) {
-            return res.status(400).json({
-                ok: false,
-                msg: 'El correo ya está registrado'
-            });
-        }
-
-        const usuario = new Usuario( req.body );
-    
-        // Encriptar contraseña
-        const salt = bcrypt.genSaltSync();
-        usuario.password = bcrypt.hashSync( password, salt );
-    
-    
-        // Guardar usuario
-        await usuario.save();
-       // console.log(usuario)
-        // Generar el TOKEN - JWT
-       const token = await generarJWT( usuario._id, usuario.role );
+     res.json({
+        ok: true,
+        medico: medicoDB
+    });
 
 
-        res.json({
-            ok: true,
-            usuario,
-            token
-        });
-
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            ok: false,
-            msg: 'Error inesperado... revisar logs'
-        });
-    }
-
-
-  
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+        ok: false,
+        msg: 'Error inesperado... habla con el administrador'
+    });
+  }
+   
 }
 
 
-const actualizarUsuario = async (req, res = response) => {
-
-    // TODO: Validar token y comprobar si es el usuario correcto
-
+const actualizarMedico = async (req, res = response) => {
+    
+    res.json({
+        ok: true,
+        msg: 'actualizarMedico'
+    });
+  
+/*
     const uid = req.params.id;
 
 
@@ -140,11 +107,20 @@ const actualizarUsuario = async (req, res = response) => {
             msg: 'Error inesperado'
         })
     }
-
+*/
 }
 
 
-const borrarUsuario = async(req, res = response ) => {
+const borrarMedico = async(req, res = response ) => {
+   
+    res.json({
+        ok: true,
+        msg: 'borrarMedico'
+    });
+
+
+/*
+
  // recuperar id de los params
     const uid = req.params.id;
 
@@ -177,14 +153,14 @@ const borrarUsuario = async(req, res = response ) => {
 
     }
 
-
+*/
 }
 
 
 
 module.exports = {
-    getUsuarios,
-    crearUsuario,
-    actualizarUsuario,
-    borrarUsuario
+    getMedicos,
+    crearMedico,
+    actualizarMedico,
+    borrarMedico
 }

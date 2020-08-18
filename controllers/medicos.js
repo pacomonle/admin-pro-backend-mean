@@ -53,107 +53,77 @@ const crearMedico = async(req, res = response) => {
 
 const actualizarMedico = async (req, res = response) => {
     
-    res.json({
-        ok: true,
-        msg: 'actualizarMedico'
-    });
-  
-/*
-    const uid = req.params.id;
-
+    const id  = req.params.id;
+    const uid = req.uid;
 
     try {
+        
+        const medico = await Medico.findById( id );
 
-        const usuarioDB = await Usuario.findById( uid );
-
-        if ( !usuarioDB ) {
+        if ( !medico ) {
             return res.status(404).json({
-                ok: false,
-                msg: 'No existe un usuario por ese id'
+                ok: true,
+                msg: 'Medico no encontrado por id',
             });
         }
 
-        // Actualizaciones
-            //console.log(req.body)
-            //console.log(usuarioDB)
-        const { password, google, email, ...campos } = req.body;
-            //console.log(campos)
-            // delete req.body.password
-            // delete req.body.google
-        if ( usuarioDB.email !== email ) {
-
-            const existeEmail = await Usuario.findOne({ email });
-            if ( existeEmail ) {
-                return res.status(400).json({
-                    ok: false,
-                    msg: 'Ya existe un usuario con ese email'
-                });
-            }
+        const cambiosMedico = {
+            ...req.body,
+            usuario: uid
         }
-        
-        campos.email = email;
-        const usuarioActualizado = await Usuario.findByIdAndUpdate( uid, campos, { new: true } );
+
+        const medicoActualizado = await Medico.findByIdAndUpdate( id, cambiosMedico, { new: true } );
+
 
         res.json({
             ok: true,
-            usuario: usuarioActualizado
-        });
+            medico: medicoActualizado
+        })
 
-        
     } catch (error) {
+
         console.log(error);
+
         res.status(500).json({
             ok: false,
-            msg: 'Error inesperado'
+            msg: 'Hable con el administrador'
         })
     }
-*/
+
 }
 
 
 const borrarMedico = async(req, res = response ) => {
    
-    res.json({
-        ok: true,
-        msg: 'borrarMedico'
-    });
-
-
-/*
-
- // recuperar id de los params
-    const uid = req.params.id;
+    const id  = req.params.id;
 
     try {
-       // comprobar que es id corresponde a un usuarioDB
-        const usuarioDB = await Usuario.findById( uid );
-       // si no existe usuaioDB controlar error - 400 bad request
-        if ( !usuarioDB ) {
+        
+        const medico = await Medico.findById( id );
+
+        if ( !medico ) {
             return res.status(404).json({
-                ok: false,
-                msg: 'No existe un usuario por ese id'
+                ok: true,
+                msg: 'Medico no encontrado por id',
             });
         }
-       // en caso contrario borraro de la data base
-        await Usuario.findByIdAndDelete( uid );
 
-      // devolver las res
+        await Medico.findByIdAndDelete( id );
+
         res.json({
             ok: true,
-            msg: 'Usuario eliminado'
-        });
-    
+            msg: 'Médico borrado'
+        }); 
+
     } catch (error) {
-       // controlar el erro del servidor - 500 
+
         console.log(error);
+
         res.status(500).json({
             ok: false,
             msg: 'Hable con el administrador'
-        });
-
+        })
     }
-
-*/
 }
 
 

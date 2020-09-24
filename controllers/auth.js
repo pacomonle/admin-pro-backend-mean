@@ -29,7 +29,7 @@ const login = async( req, res = response ) => {
                 msg: 'Usuario no válida'
             });
         }
-       // console.log(usuarioDB)
+       console.log(usuarioDB.role)
         // Generar el TOKEN - JWT
         const token = await generarJWT( usuarioDB._id, usuarioDB.role );
 
@@ -110,10 +110,11 @@ const googleSignIn = async( req, res = response ) => {
 const renewToken = async(req, res = response) => {
 
     const uid = req.uid;
+    const role = req.role
     // console.log(uid)
 
     // Generar el TOKEN - JWT
-    const token = await generarJWT( uid );
+    const token = await generarJWT( uid, role );
 
      // Obtener el usuario por UID
      const usuario = await Usuario.findById( uid );

@@ -17,10 +17,11 @@ const validarJWT = (req, res, next) => {
 
     try {
         // destructuring del payload del token
-        const { uid, role } = jwt.verify( token, process.env.SEED );
-        req.uid = uid;
-        req.role = role
-
+       const {uid, role} = jwt.verify( token, process.env.SEED );
+       console.log(uid, role)
+       req.uid = uid;
+       req.role = role
+     
         next();
 
     } catch (error) {
@@ -38,6 +39,7 @@ const validarJWT = (req, res, next) => {
 const verificaAdmin_Role = (req, res, next) => {
   
     const role = req.role;
+    console.log(role)
 
     if (role === 'ADMIN_ROLE') {
         next();

@@ -18,7 +18,7 @@ const getUsuarios = async(req, res) => {
     // await en paralelo
 
   const [usuarios, total] =  await Promise.all([
-                                    Usuario.find({}, 'nombre email role img')
+                                    Usuario.find({}, 'nombre email role img google')
                                                                 .skip(desde)
                                                                 .limit(5),
                                         // conteo total de registros
@@ -154,7 +154,8 @@ const actualizarUsuario = async (req, res = response) => {
 const borrarUsuario = async(req, res = response ) => {
  // recuperar id de los params
     const uid = req.params.id;
-
+    console.log(uid)
+  
     try {
        // comprobar que es id corresponde a un usuarioDB
         const usuarioDB = await Usuario.findById( uid );

@@ -1,5 +1,8 @@
 // importar dotenv
 require('dotenv').config();
+
+const path = require('path');
+
 // importar express
 const express = require('express');
 // deshabilitar cors
@@ -32,6 +35,11 @@ app.use( '/api/hospitales', require('./routes/hospitales') );
 app.use( '/api/medicos', require('./routes/medicos') );
 app.use( '/api/todo', require('./routes/busquedas') );
 app.use( '/api/upload', require('./routes/uploads') );
+
+// Lo último
+app.get('*', (req, res) => {
+    res.sendFile( path.resolve( __dirname, 'public/index.html' ) );
+});
 
 // levantar servidor
 app.listen( process.env.PORT, () => {

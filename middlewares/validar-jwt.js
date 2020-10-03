@@ -36,8 +36,9 @@ const validarJWT = (req, res, next) => {
 // =====================
 // Verifica AdminRole
 // =====================
-const verificaAdmin_Role = (req, res, next) => {
-  
+const verificaAdmin_Role = async(req, res, next) => {
+ /* metodo rapido metiendo en el token el role
+
     const role = req.role;
     console.log(role)
 
@@ -52,12 +53,84 @@ const verificaAdmin_Role = (req, res, next) => {
             }
         });
     }
+ */
+    const uid = req.uid;
+    
+    try {
+        
+        const usuarioDB = await Usuario.findById(uid);
+
+        if ( !usuarioDB ) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Usuario no existe'
+            });
+        }
+
+        if ( usuarioDB.role !== 'ADMIN_ROLE' ) {
+            return res.status(403).json({
+                ok: false,
+                msg: 'No tiene privilegios para hacer eso'
+            });
+        }
+
+        next();
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
     
 };
+
+const validarADMIN_ROLE_o_MismoUsuario = async(req, res, next)  => {
+
+    const uid = req.uid;
+    const id  = req.params.id;
+    
+    try {
+        
+        const usuarioDB = await Usuario.findById(uid);
+
+        if ( !usuarioDB ) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Usuario no existe'
+            });
+        }
+
+        if ( usuarioDB.role === 'ADMIN_ROLE' || uid === id ) {
+        
+            next();
+            
+        } else {
+            return res.status(403).json({
+                ok: false,
+                msg: 'No tiene privilegios para hacer eso'
+            });
+        }
+
+        
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        })
+    }
+
+}
 
 
 
 module.exports = {
     validarJWT,
-    verificaAdmin_Role
+    verificaAdmin_Role,
+    validarADMIN_ROLE_o_MismoUsuario
 }
